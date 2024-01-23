@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            background-image: url('https://media.istockphoto.com/id/930864180/es/foto/m%C3%A9dico-y-paciente-en-la-cl%C3%ADnica-de-oftalmolog%C3%ADa.jpg?s=1024x1024&w=is&k=20&c=QKpcbrDI4dMvGGXHC4n4H5UkwvxJ_GKueLC2dUQLdx0=');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh; /* Ajusta la altura al 100% de la ventana visible */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0; /* Elimina el margen predeterminado del cuerpo */
+        }
+
+        .my-form {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px; /* Ajusta el ancho máximo del formulario */
+            width: 100%; /* Haz que el ancho sea del 100% para que se ajuste correctamente */
+            
+        }
+
+        #crud-form {
+            background-color: rgba(143, 137, 137, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            border-radius: 30px;
+            
+        }
+        .opt{
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            color: black;
+            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+            font-size: 36px;
+            border: 2px solid rgb(20, 18, 18); /* Agrega un borde de 2px sólido de color negro */
+            padding: 10px;
+        }
+
+        .btn-custom-save {
+        background-color: #29c243;
+        color: #fff;
+        border-color: #020202;
+        font-weight: bold; 
+        font-size: 16px; 
+        padding: 10px 20px; 
+        transition: background-color 0.3s ease;
+         }
+
+        .btn-custom-new {
+            
+        background-color: #2fd69f;
+        color: #fff;
+        border-color: #020202;
+        font-weight: bold; 
+        font-size: 16px; 
+        padding: 10px 20px; 
+        transition: background-color 0.3s ease;
+         }
+         .btn-custom-edit{
+            background-color: #12ce12; 
+            color: #fff; 
+            border-color: #020202; 
+         }
+
+         .btn-custom-delete{
+            background-color: #ec2853; 
+            color: #fff; 
+            border-color: #020202; 
+
+         }
+
+         
+
+        
+
+    </style>
+</head>
+<body>
+        
+    <!--formulario-->
+    <div class="container" style="margin-bottom: 20px;">
+        <form id="crud-form" class="col-md-6 mx-auto">
+            <input type="hidden" id="registro-id">
+            <label for="nombre">Nombre Completo:</label>
+            <input type="text" id="nombre" class="form-control mb-2">
+            <label for="email">Correo electrónico:</label>
+            <input type="email" id="email" class="form-control mb-2" required>
+            <label for="lente">Tipo de lente:</label>
+            <select id="lente" class="form-select mb-2" required>
+                <option value="seleccionar" disabled selected>Seleccionar lente</option>
+                <option value="monofocal">Monofocal</option>
+                <option value="bifocal">Bifocal</option>
+                <option value="progresivo">Progresivo</option>
+                <option value="fotocromático">Fotocromático</option>
+                <option value="trifocal">Trifocal</option>
+                <option value="antirreflejo">Antirreflejo</option>
+            </select>
+            <label for="diagnostico">Diagnóstico:</label>
+            <input type="text" id="diagnostico" class="form-control mb-2">
+            <label for="medida">Indice de refracción de lente:</label>
+            <input type="number" id="medida" min="1" class="form-control mb-2" required>
+            <button type="button" onclick="guardarRegistro()" class="btn btn-custom-save">Guardar</button> 
+            <button type="button" onclick="nuevoRegistro()" class="btn btn-custom-new">Nuevo</button>
+
+        </form>
+    </div>
+
+
+
+    
+    
+    <div class="container">
+        <!-- Tabla -->
+        <h1 class="opt text-center text-white">REGISTRO Y DIAGNOSTICO DE LOS PACIENTES DE LA CLINICA OPTICA</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>NOMBRE</th>
+                        <th>CORREO</th>
+                        <th>TIPO DE LENTE</th>
+                        <th>DIAGNÓSTICO</th>
+                        <th>INDICE DE REFRACCION</th>
+                        <th>ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody id="data-list"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    
+    
+
+    
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyBMJsVpnbOwVOiVNbTZScZdet9qlGigDL0",
+        authDomain: "conexion-8ec0d.firebaseapp.com",
+        databaseURL: "https://conexion-8ec0d-default-rtdb.firebaseio.com",
+        projectId: "conexion-8ec0d",
+        storageBucket: "conexion-8ec0d.appspot.com",
+        messagingSenderId: "679910299749",
+        appId: "1:679910299749:web:9800b464879628b4850e8c"
+    };
+        
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const dataList = document.getElementById("data-list");
+    
+        // Función para llenar la tabla con los datos de la base de datos
+        const llenarTabla = (snapshot) => {
+            dataList.innerHTML = ""; // Limpiar la tabla antes de agregar datos
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                const id = childSnapshot.key;
+    
+                const row = `
+                    <tr>
+                        <td>${data.name}</td>
+                        <td>${data.email}</td>
+                        <td>${data.lensType}</td>
+                        <td>${data.diagnosis}</td>
+                        <td>${data.measurement}</td>
+                        <td>
+                            <button class="btn btn-custom-edit" onclick="editarRegistro('${id}', '${data.name}', '${data.email}', '${data.lensType}', '${data.diagnosis}', '${data.measurement}')">Editar</button>
+                            <button class="btn btn-custom-delete" onclick="eliminarRegistro('${id}')">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+                dataList.innerHTML += row;
+            });
+        };
+    
+        // Escuchar cambios en la base de datos y actualizar la tabla
+        onValue(ref(database, 'Lizandro_Arcos'), llenarTabla);
+    
+        window.guardarRegistro = function () {
+            // Obtener los valores de los campos
+            const nombre = document.getElementById("nombre").value;
+            const email = document.getElementById("email").value;
+            const lente = document.getElementById("lente").value;
+            const diagnostico = document.getElementById("diagnostico").value;
+            const medida = document.getElementById("medida").value;
+    
+            // Validar que todos los campos estén completos
+            if (nombre.trim() === "" || email.trim() === "" || lente === "seleccionar" || diagnostico.trim() === "" || medida.trim() === "") {
+                alert("Por favor, completa todos los campos antes de guardar.");
+                return;
+            }
+    
+            // Validar que el campo "nombre" no contenga números
+            if (/[\d]/.test(nombre)) {
+                alert("El campo 'Nombre Completo' no debe contener números.");
+                return;
+            }
+    
+            // Verificar si es una edición o una nueva inserción
+            const id = document.getElementById("registro-id").value;
+            if (id) {
+                // Actualizar registro existente
+                update(ref(database, `Lizandro_Arcos/${id}`), {
+                    name: nombre,
+                    email: email,
+                    lensType: lente,
+                    diagnosis: diagnostico,
+                    measurement: medida
+                });
+            } else {
+                // Insertar nuevo registro
+                push(ref(database, 'Lizandro_Arcos'), {
+                    name: nombre,
+                    email: email,
+                    lensType: lente,
+                    diagnosis: diagnostico,
+                    measurement: medida
+                });
+            }
+    
+            // Limpiar el formulario después de crear o actualizar
+            document.getElementById("crud-form").reset();
+            document.getElementById("registro-id").value = "";
+        }
+    
+        window.editarRegistro = function (id, name, email, lensType, diagnosis, measurement) {
+            // Rellenar el formulario con los datos del registro seleccionado
+            document.getElementById("registro-id").value = id;
+            document.getElementById("nombre").value = name;
+            document.getElementById("email").value = email;
+            document.getElementById("lente").value = lensType;
+            document.getElementById("diagnostico").value = diagnosis;
+            document.getElementById("medida").value = measurement;
+        }
+    
+        window.eliminarRegistro = function (id) {
+            const confirmacion = confirm("¿Estás seguro de que deseas eliminar este registro?");
+            
+            if (confirmacion) {
+                // Eliminar el registro de la base de datos
+                remove(ref(database, `Lizandro_Arcos/${id}`));
+            }
+        }
+    </script>
+    
+
+</body>
+</html>
